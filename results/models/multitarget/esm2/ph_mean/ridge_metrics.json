@@ -1,0 +1,17 @@
+{
+  "cv_r2_mean": -1.8458256901664978,
+  "cv_r2_std": 0.9471680492655242,
+  "cv_mae_mean": 0.04554626598312659,
+  "cv_rmse_mean": 0.06512176242304515,
+  "cv_pearson_mean": 0.0548330784195077,
+  "test_r2": -0.8196368044271956,
+  "test_mae": 0.040781669049668595,
+  "test_rmse": 0.059057615347604155,
+  "test_pearson": 0.07786810008873019,
+  "target": "ph_mean",
+  "model": "ridge",
+  "n_train": 273,
+  "n_test": 72,
+  "n_species_train": 147,
+  "task_type": "regression"
+}

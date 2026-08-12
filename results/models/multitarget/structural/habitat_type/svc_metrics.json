@@ -1,0 +1,14 @@
+{
+  "cv_accuracy_mean": 0.8160389610389611,
+  "cv_accuracy_std": 0.027721721516141766,
+  "cv_f1_macro_mean": 0.5135393698577206,
+  "cv_f1_macro_std": 0.05565670108173622,
+  "test_accuracy": 0.6666666666666666,
+  "test_f1_macro": 0.3596059113300492,
+  "target": "habitat_type",
+  "model": "svc",
+  "n_train": 277,
+  "n_test": 72,
+  "n_species_train": 148,
+  "task_type": "classification"
+}

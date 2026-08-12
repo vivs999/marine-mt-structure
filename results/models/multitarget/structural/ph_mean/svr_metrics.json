@@ -1,0 +1,17 @@
+{
+  "cv_r2_mean": -1.1605174678573653,
+  "cv_r2_std": 0.5394313251718964,
+  "cv_mae_mean": 0.04235054471190094,
+  "cv_rmse_mean": 0.05688799404899316,
+  "cv_pearson_mean": -0.0014603300981872332,
+  "test_r2": -0.665031708343734,
+  "test_mae": 0.04335572312184303,
+  "test_rmse": 0.056493021700091385,
+  "test_pearson": 0.05463471386329246,
+  "target": "ph_mean",
+  "model": "svr",
+  "n_train": 273,
+  "n_test": 72,
+  "n_species_train": 147,
+  "task_type": "regression"
+}

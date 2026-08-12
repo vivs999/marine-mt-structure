@@ -1,0 +1,14 @@
+{
+  "cv_accuracy_mean": 0.9025974025974026,
+  "cv_accuracy_std": 0.0268276924112882,
+  "cv_f1_macro_mean": 0.7919820232443298,
+  "cv_f1_macro_std": 0.09768649303035429,
+  "test_accuracy": 0.8888888888888888,
+  "test_f1_macro": 0.8365811965811966,
+  "target": "habitat_type",
+  "model": "random_forest",
+  "n_train": 277,
+  "n_test": 72,
+  "n_species_train": 148,
+  "task_type": "classification"
+}

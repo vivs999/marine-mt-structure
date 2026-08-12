@@ -1,0 +1,17 @@
+{
+  "cv_r2_mean": -1.0072772965617818,
+  "cv_r2_std": 0.9901075749689678,
+  "cv_mae_mean": 4.16211223573144,
+  "cv_rmse_mean": 6.579342393375354,
+  "cv_pearson_mean": -0.04508983049186936,
+  "test_r2": -0.282338196569508,
+  "test_mae": 7.718915778176527,
+  "test_rmse": 12.26836235050513,
+  "test_pearson": -0.025677409616003555,
+  "target": "salinity_mean_psu",
+  "model": "ridge",
+  "n_train": 277,
+  "n_test": 72,
+  "n_species_train": 148,
+  "task_type": "regression"
+}

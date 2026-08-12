@@ -1,0 +1,16 @@
+# Core pipeline (data integration, feature extraction, training, figures)
+numpy==2.4.3
+pandas==3.0.1
+scipy==1.17.1
+scikit-learn==1.8.0
+matplotlib==3.10.8
+requests==2.32.5
+pyyaml==6.0.3
+
+# Optional: only needed to regenerate ESM-2 embeddings locally instead of
+# using the Colab notebook in notebooks/esm2_embeddings.ipynb.
+# torch>=2.2
+# transformers>=4.40
+
+# Optional: structure prediction with Boltz-1 is installed and run separately,
+# e.g. `uv run --with boltz python3 src/predict_metal_bound_structures.py`.

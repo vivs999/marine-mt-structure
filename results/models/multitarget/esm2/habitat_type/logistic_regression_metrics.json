@@ -1,0 +1,14 @@
+{
+  "cv_accuracy_mean": 0.8884415584415584,
+  "cv_accuracy_std": 0.04943328692932396,
+  "cv_f1_macro_mean": 0.796290384344456,
+  "cv_f1_macro_std": 0.12211880985694588,
+  "test_accuracy": 0.7777777777777778,
+  "test_f1_macro": 0.7369007803790413,
+  "target": "habitat_type",
+  "model": "logistic_regression",
+  "n_train": 277,
+  "n_test": 72,
+  "n_species_train": 148,
+  "task_type": "classification"
+}

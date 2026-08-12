@@ -1,0 +1,17 @@
+{
+  "cv_r2_mean": -0.12540457871824856,
+  "cv_r2_std": 0.09727893407896214,
+  "cv_mae_mean": 2.8740114932177567,
+  "cv_rmse_mean": 5.453141899571075,
+  "cv_pearson_mean": 0.013290894241365578,
+  "test_r2": -0.2603449161278426,
+  "test_mae": 6.594004473705971,
+  "test_rmse": 12.162700487996384,
+  "test_pearson": 0.39349353738610715,
+  "target": "salinity_mean_psu",
+  "model": "svr",
+  "n_train": 277,
+  "n_test": 72,
+  "n_species_train": 148,
+  "task_type": "regression"
+}

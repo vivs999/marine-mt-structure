@@ -1,0 +1,17 @@
+{
+  "cv_r2_mean": -0.27331724962935644,
+  "cv_r2_std": 0.2512723625303406,
+  "cv_mae_mean": 1211.0673278072306,
+  "cv_rmse_mean": 1569.9993628612576,
+  "cv_pearson_mean": 0.12406620267997315,
+  "test_r2": -0.06936654447244561,
+  "test_mae": 1056.641262053794,
+  "test_rmse": 1356.236119955749,
+  "test_pearson": 0.13610335367329843,
+  "target": "depth_mean_m",
+  "model": "random_forest",
+  "n_train": 277,
+  "n_test": 72,
+  "n_species_train": 148,
+  "task_type": "regression"
+}
