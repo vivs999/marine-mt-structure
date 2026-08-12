@@ -9,7 +9,8 @@ The study asks one question. Does the structure of an MT protein carry a
 recoverable signal of the environment that the organism lives in?
 
 To answer it, we predicted Zn(2+)-bound MT structures with Boltz-1 for 535
-sequences from 272 marine species. We then trained Random Forest models to
+sequences from 272 organisms. Most are marine animals, but not all of them are.
+See the limits below. We then trained Random Forest models to
 predict habitat and five environmental variables from three feature sets: apo
 structural geometry, ESM-2 sequence embeddings, and Zn(2+) coordination
 geometry from the Boltz predictions.
@@ -31,6 +32,11 @@ model from recognizing a species it has already seen.
 | Dissolved oxygen | Test Pearson r | 0.523 |
 | Salinity, pH, depth | Test Pearson r | No recoverable signal |
 
+Count the recovered signal as one axis, not two. Sea surface temperature and
+dissolved oxygen correlate at Pearson r of -0.939 across the cohort, which
+follows from the way oxygen solubility depends on temperature. The dissolved
+oxygen result is the thermal result in different units.
+
 The three feature sets give this ablation on habitat classification:
 
 | Feature set | CV accuracy | Test accuracy |
@@ -50,10 +56,11 @@ degrees for an ideal tetrahedron. These values come from 532 structures. They
 show that the predictions are chemically plausible. They are not a measurement
 of accuracy against experiment.
 
-The signal is selective. It is present for habitat and for thermal variables,
+The signal is selective. It is present for habitat and for the thermal axis,
 and it is absent for salinity, pH, and depth. This pattern matches the known
 biology of MT, which evolved under metal stress and oxidative stress rather
-than under osmotic or acid-base pressure.
+than under osmotic or acid-base pressure. Note that the pH null is weak
+evidence, because the pH labels barely vary across the cohort.
 
 ## What the results do not show
 
@@ -72,6 +79,16 @@ Read these limits before you cite any number above.
   singleton attached.
 - **The classes are unbalanced.** Coastal_estuarine holds 66% of the cohort.
   Read the macro F1 of 0.837 next to the accuracy of 88.9%.
+- **The cohort is not purely marine.** It holds freshwater fishes, including
+  *Esox lucius*, *Perca fluviatilis*, *Rutilus rutilus*, and *Cyprinus carpio*.
+  It also holds the zebra mussel *Dreissena polymorpha*, the land snail *Helix
+  pomatia*, and the green alga *Raphidocelis subcapitata*. These organisms take
+  a Bio-ORACLE value from a nearby coastal grid cell, which affects the salinity
+  labels in particular. We have not yet counted every non-marine entry, because
+  the dataset carries no taxonomy.
+- **The pH labels have almost no range.** pH spans 0.521 units across the whole
+  cohort, from 7.75 to 8.27, and the interquartile range is about 0.5% of the
+  median. Read the pH result as a statement about the label, not about MT.
 - **We did not control for phylogeny.** Related species share both a habitat
   and an ancestor. The split at the level of the organism stops data leakage.
   It does not separate an environmental signal from a phylogenetic one.
