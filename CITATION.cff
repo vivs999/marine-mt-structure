@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+title: >-
+  Marine metallothionein structure encodes environmental
+  niche: code and data
+message: >-
+  If you use this software or data, please cite it using the
+  metadata below. A manuscript reporting these results is in
+  preparation, and this entry will be updated when it is
+  available.
+type: software
+authors:
+  - family-names: Rochlani
+    given-names: Vivaan
+repository-code: https://github.com/vivs999/marine-mt-structure
+abstract: >-
+  Code and processed data for a study of whether the structure
+  of marine metallothionein proteins carries a recoverable
+  signal of the environment that the organism lives in.
+  Zn(2+)-bound structures were predicted with Boltz-1 for 535
+  sequences from 272 marine species. Random Forest models
+  trained on Zn(2+) coordination geometry and ESM-2 embeddings
+  classified habitat with 88.9 percent accuracy on held-out
+  species, and predicted sea surface temperature at Pearson r
+  of 0.665. No signal was recovered for salinity, pH, or
+  depth.
+keywords:
+  - metallothionein
+  - marine biology
+  - protein structure prediction
+  - machine learning
+  - Boltz-1
+  - ESM-2
+  - environmental adaptation
+license: MIT
+version: 1.0.0
+date-released: '2026-08-11'
