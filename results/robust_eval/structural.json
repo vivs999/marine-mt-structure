@@ -1,0 +1,15 @@
+{
+  "feature_set": "structural",
+  "n_records": 307,
+  "n_species": 145,
+  "n_repeats": 10,
+  "n_splits": 5,
+  "habitat_accuracy_mean": 0.8185667752442998,
+  "habitat_accuracy_sd": 0.010097719869706846,
+  "habitat_f1_macro_mean": 0.7823756290673096,
+  "habitat_f1_macro_sd": 0.010023070656434247,
+  "sst_pearson_mean": 0.46044609816444443,
+  "sst_pearson_sd": 0.005654364590562235,
+  "sst_r2_mean": 0.17133393696847324,
+  "sst_r2_sd": 0.006870824196890626
+}

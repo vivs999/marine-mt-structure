@@ -16,3 +16,9 @@ data/raw/pdb_structures*/
 # R
 .Rhistory
 .RData
+
+# Backup of the data file, local only
+*.csv.bak
+
+# Figure build output. The shipped copies live in figures/
+results/figures/

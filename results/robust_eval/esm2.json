@@ -1,0 +1,15 @@
+{
+  "feature_set": "esm2",
+  "n_records": 307,
+  "n_species": 145,
+  "n_repeats": 10,
+  "n_splits": 5,
+  "habitat_accuracy_mean": 0.8680781758957655,
+  "habitat_accuracy_sd": 0.013838857189738079,
+  "habitat_f1_macro_mean": 0.8394144622923925,
+  "habitat_f1_macro_sd": 0.01409787864319861,
+  "sst_pearson_mean": 0.5259507481355714,
+  "sst_pearson_sd": 0.004500788596219774,
+  "sst_r2_mean": 0.2607829473194922,
+  "sst_r2_sd": 0.006018931889743112
+}

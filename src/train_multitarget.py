@@ -46,6 +46,9 @@ warnings.filterwarnings("ignore")
 # Paths
 INTEGRATED_V2   = Path("data/processed/integrated_v2.csv")
 INTEGRATED_V1   = Path("data/processed/integrated_populated.csv")
+
+# Organisms kept in the modelled cohort.  See load_data.
+MARINE_ORIGINS  = ("marine", "diadromous")
 ESM2_EMBEDDINGS    = Path("data/processed/esm2_embeddings.csv")
 METALBOUND_FEATS   = Path("data/processed/metalbound_features.csv")
 OUT_BASE           = Path("results/models/multitarget")
@@ -151,6 +154,25 @@ def load_data(real_only: bool = True) -> pd.DataFrame:
                   f"(dropped {n_before - len(df)} non-sampled rows)")
         else:
             print("  WARNING: sst_mean_c_status not found - cannot filter. Using all rows.")
+
+        # Keep only marine and diadromous organisms.  The earlier cohort included
+        # freshwater fishes, a zebra mussel, a land snail, and a green alga, which
+        # take Bio-ORACLE values from nearby coastal cells and distort the
+        # salinity labels in particular.
+        if "origin" in df.columns:
+            n_before = len(df)
+            df = df[df["origin"].isin(MARINE_ORIGINS)].reset_index(drop=True)
+            print(f"  Filtered to marine and diadromous organisms: {len(df)}/{n_before} "
+                  f"(dropped {n_before - len(df)} non-marine rows)")
+
+        # The single hydrothermal_vent record cannot be trained on or predicted.
+        # Carried as a fourth class it forces an F1 of 0 and lowers the macro
+        # average by about 0.21, which is an artifact rather than a result.
+        if "habitat_type" in df.columns:
+            n_before = len(df)
+            df = df[df["habitat_type"] != "hydrothermal_vent"].reset_index(drop=True)
+            if len(df) != n_before:
+                print(f"  Dropped the hydrothermal_vent singleton: {len(df)}/{n_before}")
 
     print(f"  Shape (final): {df.shape}")
     return df
@@ -445,6 +467,10 @@ def make_organism_split(
     df: pd.DataFrame, X: pd.DataFrame, out_dir: Path
 ) -> tuple[np.ndarray, np.ndarray]:
     """80/20 organism-level hold-out split. Saves train/test UniProt IDs to disk."""
+    # Group by species.  An earlier version grouped on the raw organism string,
+    # and 11 species carried two spellings each, so three species appeared in
+    # both the training and the test set.  The `organism` column is now a
+    # normalized binomial, and `organism_verbatim` holds the original string.
     le = LabelEncoder()
     groups = le.fit_transform(df["organism"].values)
 

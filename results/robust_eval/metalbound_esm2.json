@@ -1,0 +1,15 @@
+{
+  "feature_set": "metalbound+esm2",
+  "n_records": 307,
+  "n_species": 145,
+  "n_repeats": 10,
+  "n_splits": 5,
+  "habitat_accuracy_mean": 0.8703583061889251,
+  "habitat_accuracy_sd": 0.010783677757164035,
+  "habitat_f1_macro_mean": 0.8435102754675998,
+  "habitat_f1_macro_sd": 0.011434447744427336,
+  "sst_pearson_mean": 0.5283705390223721,
+  "sst_pearson_sd": 0.0029703063200044477,
+  "sst_r2_mean": 0.26350789866074625,
+  "sst_r2_sd": 0.0039195683648002196
+}

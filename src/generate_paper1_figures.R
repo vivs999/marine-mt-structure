@@ -114,37 +114,55 @@ get_cv_sd <- function(df) {
     pull(cv_accuracy_std) |> first()
 }
 
+# Ablation reads the repeated stratified group CV results, not the single
+# hold-out.  See src/robust_eval.py and the README.
+read_robust <- function(name) {
+  p <- file.path(ROOT, "results", "robust_eval", paste0(name, ".json"))
+  if (!file.exists(p)) return(NULL)
+  jsonlite::fromJSON(p)
+}
+r_struct <- read_robust("structural")
+r_esm2   <- read_robust("esm2")
+r_mb     <- read_robust("metalbound_esm2")
+
 ablation <- tibble(
   feature_set = factor(
     c("Structural\n(apo ESMFold)", "ESM-2\n(sequence only)", "Metalbound\n+ ESM-2"),
     levels = c("Structural\n(apo ESMFold)", "ESM-2\n(sequence only)", "Metalbound\n+ ESM-2")
   ),
-  cv_acc = c(get_cv_acc(s_struct), get_cv_acc(s_esm2), get_cv_acc(s_mb)),
-  cv_sd  = c(get_cv_sd(s_struct),  get_cv_sd(s_esm2),  get_cv_sd(s_mb))
+  cv_acc = c(r_struct$habitat_accuracy_mean, r_esm2$habitat_accuracy_mean, r_mb$habitat_accuracy_mean),
+  cv_sd  = c(r_struct$habitat_accuracy_sd,   r_esm2$habitat_accuracy_sd,   r_mb$habitat_accuracy_sd)
 )
+
+gain_esm2 <- (ablation$cv_acc[2] - ablation$cv_acc[1]) * 100
+gain_mb   <- (ablation$cv_acc[3] - ablation$cv_acc[2]) * 100
 
 fig3 <- ggplot(ablation, aes(x = feature_set, y = cv_acc, fill = feature_set)) +
   geom_col(width = 0.55, color = "grey30", linewidth = 0.4) +
   geom_errorbar(aes(ymin = cv_acc - cv_sd, ymax = cv_acc + cv_sd),
                 width = 0.18, linewidth = 0.7, color = "grey30") +
   geom_text(aes(label = percent(cv_acc, accuracy = 0.1)),
-            vjust = -0.7, size = 3.8, fontface = "bold") +
-  annotate("segment", x = 2, xend = 3,
-           y = max(ablation$cv_acc, na.rm=TRUE) + 0.025,
-           yend = max(ablation$cv_acc, na.rm=TRUE) + 0.025,
-           color = "#C62828", linewidth = 0.8,
+            vjust = -1.6, size = 3.8, fontface = "bold") +
+  annotate("segment", x = 1, xend = 2, y = 0.945, yend = 0.945,
+           color = "#2E7D32", linewidth = 0.8,
            arrow = arrow(ends = "last", length = unit(0.15, "cm"))) +
-  annotate("text", x = 2.5, y = max(ablation$cv_acc, na.rm=TRUE) + 0.038,
-           label = sprintf("+%.1f%%\n(Zn geometry)",
-                           (ablation$cv_acc[3] - ablation$cv_acc[2]) * 100),
-           color = "#C62828", size = 3.2) +
-  scale_fill_manual(values = c("#90CAF9", "#A5D6A7", "#1565C0")) +
+  annotate("text", x = 1.5, y = 0.962,
+           label = sprintf("+%.1f points\n(sequence embeddings)", gain_esm2),
+           color = "#2E7D32", size = 3.2) +
+  annotate("segment", x = 2, xend = 3, y = 0.900, yend = 0.900,
+           color = "grey45", linewidth = 0.7, linetype = "22") +
+  annotate("text", x = 2.5, y = 0.917,
+           label = sprintf("+%.1f points, within noise\n(Zn geometry adds nothing)", gain_mb),
+           color = "grey35", size = 3.2) +
+  scale_fill_manual(values = c("#90CAF9", "#1565C0", "#1565C0")) +
   scale_y_continuous(labels = percent_format(), expand = c(0, 0)) +
-  coord_cartesian(ylim = c(0.6, 1.02)) +
+  coord_cartesian(ylim = c(0.6, 1.0)) +
   labs(
-    title    = "Figure 3 - Ablation Study: Habitat Classification Accuracy",
-    subtitle = "5-fold cross-validation, organism-level GroupShuffleSplit (n = 349, 148 species train)",
-    x = NULL, y = "CV Accuracy"
+    title    = "Figure 3 - Ablation: habitat classification accuracy",
+    subtitle = sprintf(
+      "10 x 5-fold stratified group CV (n = %d records, %d species). Error bars are 1 SD across repeats.",
+      r_mb$n_records, r_mb$n_species),
+    x = NULL, y = "Accuracy"
   ) +
   theme_paper() +
   theme(legend.position = "none")

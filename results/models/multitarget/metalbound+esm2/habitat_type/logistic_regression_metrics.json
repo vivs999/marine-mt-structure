@@ -1,14 +1,14 @@
 {
-  "cv_accuracy_mean": 0.8992207792207791,
-  "cv_accuracy_std": 0.03971223865686525,
-  "cv_f1_macro_mean": 0.8115900034572684,
-  "cv_f1_macro_std": 0.11324379562341508,
-  "test_accuracy": 0.7777777777777778,
-  "test_f1_macro": 0.7369007803790413,
+  "cv_accuracy_mean": 0.861416490486258,
+  "cv_accuracy_std": 0.04944660657640238,
+  "cv_f1_macro_mean": 0.8535446213146299,
+  "cv_f1_macro_std": 0.057781356042075564,
+  "test_accuracy": 0.7666666666666667,
+  "test_f1_macro": 0.5320266392333098,
   "target": "habitat_type",
   "model": "logistic_regression",
-  "n_train": 277,
-  "n_test": 72,
-  "n_species_train": 148,
+  "n_train": 217,
+  "n_test": 90,
+  "n_species_train": 116,
   "task_type": "classification"
 }

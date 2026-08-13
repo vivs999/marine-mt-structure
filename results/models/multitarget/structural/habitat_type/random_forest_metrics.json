@@ -1,14 +1,14 @@
 {
-  "cv_accuracy_mean": 0.8593506493506494,
-  "cv_accuracy_std": 0.041282260061477186,
-  "cv_f1_macro_mean": 0.760421986687642,
-  "cv_f1_macro_std": 0.10009735481135558,
-  "test_accuracy": 0.7916666666666666,
-  "test_f1_macro": 0.7286733884672029,
+  "cv_accuracy_mean": 0.8570824524312897,
+  "cv_accuracy_std": 0.047480067749430574,
+  "cv_f1_macro_mean": 0.8319694931698342,
+  "cv_f1_macro_std": 0.06034589209083465,
+  "test_accuracy": 0.8444444444444444,
+  "test_f1_macro": 0.7108262108262108,
   "target": "habitat_type",
   "model": "random_forest",
-  "n_train": 277,
-  "n_test": 72,
-  "n_species_train": 148,
+  "n_train": 217,
+  "n_test": 90,
+  "n_species_train": 116,
   "task_type": "classification"
 }
