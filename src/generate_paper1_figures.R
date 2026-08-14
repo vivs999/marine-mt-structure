@@ -137,26 +137,46 @@ ablation <- tibble(
 gain_esm2 <- (ablation$cv_acc[2] - ablation$cv_acc[1]) * 100
 gain_mb   <- (ablation$cv_acc[3] - ablation$cv_acc[2]) * 100
 
+# Bracket tops sit just above each error bar, so each comparison visibly
+# connects the two bars it describes.
+top <- ablation$cv_acc + ablation$cv_sd
+b1  <- max(top[1], top[2]) + 0.022   # bars 1 to 2
+b2  <- max(top[2], top[3]) + 0.072   # bars 2 to 3, stacked above
+tick <- 0.011
+
 fig3 <- ggplot(ablation, aes(x = feature_set, y = cv_acc, fill = feature_set)) +
   geom_col(width = 0.55, color = "grey30", linewidth = 0.4) +
   geom_errorbar(aes(ymin = cv_acc - cv_sd, ymax = cv_acc + cv_sd),
                 width = 0.18, linewidth = 0.7, color = "grey30") +
   geom_text(aes(label = percent(cv_acc, accuracy = 0.1)),
-            vjust = -1.6, size = 3.8, fontface = "bold") +
-  annotate("segment", x = 1, xend = 2, y = 0.945, yend = 0.945,
-           color = "#2E7D32", linewidth = 0.8,
-           arrow = arrow(ends = "last", length = unit(0.15, "cm"))) +
-  annotate("text", x = 1.5, y = 0.962,
-           label = sprintf("+%.1f points\n(sequence embeddings)", gain_esm2),
-           color = "#2E7D32", size = 3.2) +
-  annotate("segment", x = 2, xend = 3, y = 0.900, yend = 0.900,
-           color = "grey45", linewidth = 0.7, linetype = "22") +
-  annotate("text", x = 2.5, y = 0.917,
-           label = sprintf("+%.1f points, within noise\n(Zn geometry adds nothing)", gain_mb),
-           color = "grey35", size = 3.2) +
-  scale_fill_manual(values = c("#90CAF9", "#1565C0", "#1565C0")) +
+            y = ablation$cv_acc - 0.035, size = 4.2, fontface = "bold",
+            color = "white") +
+
+  # Comparison 1: apo structure to ESM-2. A real gain.
+  annotate("segment", x = 1, xend = 2, y = b1, yend = b1,
+           color = "#2E7D32", linewidth = 0.7) +
+  annotate("segment", x = 1, xend = 1, y = b1, yend = b1 - tick,
+           color = "#2E7D32", linewidth = 0.7) +
+  annotate("segment", x = 2, xend = 2, y = b1, yend = b1 - tick,
+           color = "#2E7D32", linewidth = 0.7) +
+  annotate("text", x = 1.5, y = b1 + 0.014,
+           label = sprintf("+%.1f points  (sequence embeddings)", gain_esm2),
+           color = "#2E7D32", size = 3.4, fontface = "bold") +
+
+  # Comparison 2: ESM-2 to ESM-2 plus Zn geometry. Inside the noise.
+  annotate("segment", x = 2, xend = 3, y = b2, yend = b2,
+           color = "grey45", linewidth = 0.6, linetype = "22") +
+  annotate("segment", x = 2, xend = 2, y = b2, yend = b2 - tick,
+           color = "grey45", linewidth = 0.6) +
+  annotate("segment", x = 3, xend = 3, y = b2, yend = b2 - tick,
+           color = "grey45", linewidth = 0.6) +
+  annotate("text", x = 2.5, y = b2 + 0.014,
+           label = sprintf("+%.1f points  (Zn geometry, within noise)", gain_mb),
+           color = "grey35", size = 3.4) +
+
+  scale_fill_manual(values = c("#B0BEC5", "#1565C0", "#1565C0")) +
   scale_y_continuous(labels = percent_format(), expand = c(0, 0)) +
-  coord_cartesian(ylim = c(0.6, 1.0)) +
+  coord_cartesian(ylim = c(0.60, 1.02)) +
   labs(
     title    = "Figure 3 - Ablation: habitat classification accuracy",
     subtitle = sprintf(

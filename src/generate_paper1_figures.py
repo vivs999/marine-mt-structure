@@ -80,40 +80,107 @@ def load_predictions(directory: Path, target: str, model: str = "random_forest")
 # Figure 1: Pipeline schematic
 
 def fig_pipeline_schematic() -> None:
-    fig, ax = plt.subplots(figsize=(10, 4))
-    ax.set_xlim(0, 10)
-    ax.set_ylim(0, 3)
+    """Study design, drawn from the live result files so it cannot drift."""
+    import json
+
+    def robust(name):
+        f = ROOT / "results" / "robust_eval" / f"{name}.json"
+        return json.load(open(f)) if f.exists() else None
+
+    mb, esm, st = robust("metalbound_esm2"), robust("esm2"), robust("structural")
+    n_rec = mb["n_records"] if mb else 307
+    n_sp = mb["n_species"] if mb else 145
+
+    fig, ax = plt.subplots(figsize=(13, 7.8))
+    ax.set_xlim(0, 13)
+    ax.set_ylim(0, 7.8)
     ax.axis("off")
 
-    boxes = [
-        (0.5, 1.2, "MT Sequences\n(535 seqs,\n272 species)", "#E3F2FD"),
-        (2.5, 1.2, "Structure\nPrediction\n(ESMFold/Boltz)", "#E8F5E9"),
-        (4.5, 1.2, "Feature\nExtraction\n(47 struct +\n2560 ESM-2 +\n13 Zn geometry)", "#FFF3E0"),
-        (6.8, 1.2, "Random Forest\n+ Cross-validation\n(GroupShuffleSplit)", "#F3E5F5"),
-        (9.0, 1.2, "Habitat /\nThermal\nPrediction", "#FCE4EC"),
+    INK, MUTED = "#1A1A1A", "#5A5A5A"
+    BLUE, GREY, GREEN, SAND = "#1F4E79", "#E8E8E8", "#2E7D32", "#F5EFE0"
+
+    def box(x, y, w, h, title, body, fill="white", edge=INK, lw=1.1, tsize=10, bsize=8.6):
+        ax.add_patch(mpatches.FancyBboxPatch(
+            (x, y), w, h, boxstyle="round,pad=0.045,rounding_size=0.08",
+            linewidth=lw, edgecolor=edge, facecolor=fill, zorder=2))
+        if title:
+            ax.text(x + w / 2, y + h - 0.30, title, ha="center", va="center",
+                    fontsize=tsize, fontweight="bold", color=INK, zorder=3)
+        if body:
+            ax.text(x + w / 2, y + (h - 0.62) / 2 + 0.06, body, ha="center", va="center",
+                    fontsize=bsize, color=MUTED, linespacing=1.5, zorder=3)
+
+    def arrow(x0, y0, x1, y1, color=INK, lw=1.3, style="-|>"):
+        ax.annotate("", xy=(x1, y1), xytext=(x0, y0), zorder=1,
+                    arrowprops=dict(arrowstyle=style, color=color, lw=lw,
+                                    shrinkA=0, shrinkB=0))
+
+    # Stage 1, inputs
+    box(0.35, 5.25, 2.5, 1.35, "Sequences",
+        "UniProt and NCBI\n535 metallothioneins", fill="white")
+    box(0.35, 3.45, 2.5, 1.35, "Environment",
+        "OBIS occurrences\nBio-ORACLE v3 layers", fill="white")
+
+    # Stage 2, cohort
+    box(3.45, 4.05, 2.6, 2.55, "Modelled cohort",
+        f"535 sequences\n\u2193 measured label\n349 records\n"
+        f"\u2193 marine only\n{n_rec} records\n{n_sp} species",
+        fill=SAND, bsize=8.4)
+    arrow(2.85, 5.92, 3.45, 5.55)
+    arrow(2.85, 4.12, 3.45, 4.95)
+
+    # Stage 3, three feature sets
+    ax.text(7.95, 7.02, "Feature sets, compared by ablation",
+            ha="center", va="center", fontsize=9.5, fontweight="bold", color=INK)
+    fb = [
+        (5.62, "Apo structural geometry", "47 features, ESMFold", GREY),
+        (4.52, "ESM-2 embeddings", "2560 dims, mean pooled", BLUE),
+        (3.42, "Zn(2+) coordination geometry", "13 features, Boltz-1", GREY),
     ]
+    for y, t, b, c in fb:
+        filled = c == BLUE
+        box(6.35, y, 3.2, 0.98, t, b,
+            fill="#EAF1F8" if filled else "white",
+            edge=c if filled else INK, lw=1.6 if filled else 1.0,
+            tsize=9.2, bsize=8.2)
+        arrow(6.05, 5.32, 6.35, y + 0.49)
 
-    for (x, y, label, color) in boxes:
-        rect = mpatches.FancyBboxPatch(
-            (x - 0.85, y - 0.7), 1.7, 1.4,
-            boxstyle="round,pad=0.1",
-            linewidth=1.2, edgecolor="#555",
-            facecolor=color,
-        )
-        ax.add_patch(rect)
-        ax.text(x, y, label, ha="center", va="center", fontsize=7.5, wrap=True)
+    # Stage 4, evaluation
+    box(9.95, 4.05, 2.7, 2.55, "Random Forest",
+        "300 trees\n\n10 repeats of\n5-fold stratified\ngroup CV\n\n"
+        "species never\nsplit across folds",
+        fill="white", bsize=8.2)
+    for y, *_ in fb:
+        arrow(9.55, y + 0.49, 9.95, 5.32)
 
-    for i in range(len(boxes) - 1):
-        x0 = boxes[i][0] + 0.85
-        x1 = boxes[i + 1][0] - 0.85
-        y = 1.2
-        ax.annotate("", xy=(x1, y), xytext=(x0, y),
-                    arrowprops=dict(arrowstyle="->", color="#333", lw=1.5))
+    # Stage 5, outcome
+    box(0.35, 0.35, 12.3, 2.55, "", "", fill="white", edge=GREEN, lw=1.6)
+    ax.text(6.5, 2.62, "Result", ha="center", va="center", fontsize=11,
+            fontweight="bold", color=INK, zorder=3)
+    if mb and esm and st:
+        acc = lambda d: d["habitat_accuracy_mean"] * 100
+        cols = [
+            (2.45, "Headline",
+             f"Habitat accuracy  {acc(mb):.1f}%\nSD {mb['habitat_accuracy_sd']*100:.1f} points\n"
+             f"Macro F1  {mb['habitat_f1_macro_mean']:.3f}\nSST  r = {mb['sst_pearson_mean']:.3f}", INK),
+            (6.50, "Embeddings over apo structure",
+             f"{acc(st):.1f}%  \u2192  {acc(esm):.1f}%\n\n+{acc(esm)-acc(st):.1f} points\n"
+             f"several times the SD\nthis gain is real", GREEN),
+            (10.55, "Zn geometry over embeddings",
+             f"{acc(esm):.1f}%  \u2192  {acc(mb):.1f}%\n\n+{acc(mb)-acc(esm):.1f} points\n"
+             f"SD is {mb['habitat_accuracy_sd']*100:.1f}\nnot measurable", MUTED),
+        ]
+        for x, head, body, c in cols:
+            ax.text(x, 2.10, head, ha="center", va="center", fontsize=9.2,
+                    fontweight="bold", color=c, zorder=3)
+            ax.text(x, 1.24, body, ha="center", va="center", fontsize=8.8,
+                    color=INK, linespacing=1.65, zorder=3)
+        for xd in (4.48, 8.52):
+            ax.plot([xd, xd], [0.62, 2.28], color="#D0D0D0", lw=1, zorder=1)
+    arrow(11.3, 4.05, 11.3, 2.90, color=GREEN, lw=1.5)
 
-    ax.text(5.0, 0.15, "Zn²⁺ ligand geometry from Boltz-predicted metal-bound structures (novel contribution)",
-            ha="center", va="center", fontsize=8, style="italic", color="#555")
-
-    ax.set_title("Figure 1 - ML Pipeline Overview", fontsize=11, fontweight="bold", pad=8)
+    ax.text(6.5, 7.55, "Figure 1 - Study design", ha="center", va="center",
+            fontsize=13, fontweight="bold", color=INK)
     save(fig, "fig1_pipeline_schematic.png")
 
 
